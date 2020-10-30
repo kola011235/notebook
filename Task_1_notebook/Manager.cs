@@ -12,7 +12,7 @@ namespace Task_1_notebook
         {
         }
 
-        public Manager(string lastName, string name, string phoneNumber, string departmentName) : base(lastName, name, phoneNumber)
+        public Manager(string lastName, string name, string phoneNumber, string departmentName, int yearOfBirth) : base(lastName, name, phoneNumber, yearOfBirth)
         {
             this.DepartmentName = departmentName;
         }

@@ -11,23 +11,28 @@ namespace Task_1_notebook
     abstract class StaffMember
     {
         [DataMember]
+        public int ID { get; set; }
+        [DataMember]
         public string PhoneNumber { get; set; }
         [DataMember]
         public string Name { get; set; }
         [DataMember]
         public string LastName { get; set; }
+        [DataMember]
+        public int YearOfBirth { get; set; }
         protected StaffMember()
         {
         }
-        protected StaffMember(string lastName, string name, string phoneNumber)
+        protected StaffMember(string lastName, string name, string phoneNumber, int yearOfBirth)
         {
             this.LastName = lastName;
             this.Name = name;
             this.PhoneNumber = phoneNumber;
+            this.YearOfBirth = yearOfBirth;
         }
         public override string ToString()
         {
-            return $"{Name} {LastName} {PhoneNumber}";
+            return $"{ID} {this.GetType().Name} {Name} {LastName} {YearOfBirth} {PhoneNumber}";
         }
     }
 }

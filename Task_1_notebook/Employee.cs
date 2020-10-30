@@ -9,7 +9,7 @@ namespace Task_1_notebook
     class Employee : StaffMember
     {
 
-        public Employee(string lastName, string name, string phoneNumber, string managerName):base(lastName,name,phoneNumber)
+        public Employee(string lastName, string name, string phoneNumber, string managerName, int yearOfBirth):base(lastName,name,phoneNumber,yearOfBirth)
         {
             ManagerName = managerName;
         }
