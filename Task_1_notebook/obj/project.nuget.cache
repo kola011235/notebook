@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "4GT5V/sORrT0+eGCSwxnH2lS9uwYdBtycfzgyyPqInb4BiJbIyOhTy8IoK6tUGD1VZdEjbMPwwtEm06DopKyRA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\AFONYA\\notebook\\Task_1_notebook\\Task_1_notebook.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\AFONYA\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

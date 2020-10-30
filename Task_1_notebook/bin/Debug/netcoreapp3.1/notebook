@@ -1,0 +1,1 @@
+[{"__type":"Employee:#Task_1_notebook","LastName":"last","Name":"name","PhoneNumber":"33","ManagerName":"manager"},{"__type":"Manager:#Task_1_notebook","LastName":"last","Name":"name","PhoneNumber":"33","DepartmentName":"departament"}]
