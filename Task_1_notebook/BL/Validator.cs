@@ -5,9 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace Task_1_notebook
 {
-    /// <summary>
-    /// Implements methods for validation
-    /// </summary>
     class Validator
     {
         String phoneNumberPattern = @"^((\+7|7|8)+([0-9]){10})$";

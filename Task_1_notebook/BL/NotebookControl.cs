@@ -6,9 +6,6 @@ using Task_1_notebook.Exceptions;
 
 namespace Task_1_notebook
 {
-    /// <summary>
-    /// Implements methods for validation
-    /// </summary>
     class NotebookControl
     {
         JsonFileHandler fileHandler = new JsonFileHandler("notebook.json");

@@ -6,9 +6,6 @@ using System.Text;
 
 namespace Task_1_notebook
 {
-    /// <summary>
-    /// Implements methods for load and save a list of records via json file
-    /// </summary>
     class JsonFileHandler
     {
         private string fileName;
