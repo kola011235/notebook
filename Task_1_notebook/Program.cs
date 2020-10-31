@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Threading;
+using Task_1_notebook.Exceptions;
 
 namespace Task_1_notebook
 {
     class Program
     {
         static NotebookControl notebook = new NotebookControl();
-        static void LoadShowPart()
+        static private void LoadShowPart()
         {
             bool k = true;
             while (k)
@@ -20,7 +21,7 @@ namespace Task_1_notebook
                 {
                     case "1":
                         Console.Clear();
-                        if (notebook.GetAll() == null)
+                        if (notebook.GetAll().Count==0)
                         {
                             Console.WriteLine("Notebook is empty");
                         }
@@ -38,8 +39,7 @@ namespace Task_1_notebook
                         Console.Clear();
                         Console.WriteLine("Enter name:");
                         string name = Console.ReadLine();
-                        Console.Clear();
-                        if (notebook.GetByName(name) == null)
+                        if (notebook.GetByName(name).Count == 0)
                         {
                             Console.WriteLine("There is no record with this name");
                         }
@@ -57,8 +57,7 @@ namespace Task_1_notebook
                         Console.Clear();
                         Console.WriteLine("Enter last name:");
                         name = Console.ReadLine();
-                        Console.ReadLine();
-                        if (notebook.GetByLastName(name) == null)
+                        if (notebook.GetByLastName(name).Count == 0)
                         {
                             Console.WriteLine("There is no record with this last name");
                         }
@@ -76,14 +75,13 @@ namespace Task_1_notebook
                         Console.Clear();
                         Console.WriteLine("Enter phone number:");
                         string number = Console.ReadLine();
-                        Console.Clear();
-                        if (notebook.GetByPhoneNumber(number) == null)
+                        if (notebook.GetByPhoneNumber(number).Count == 0)
                         {
                             Console.WriteLine("There is no record with this phone number");
                         }
                         else
                         {
-                            foreach (var item in notebook.GetByLastName(number))
+                            foreach (var item in notebook.GetByPhoneNumber(number))
                             {
                                 Console.WriteLine(item);
                             }
@@ -99,13 +97,13 @@ namespace Task_1_notebook
 
                     default:
                         Console.Clear();
-                        Console.WriteLine("Wrong input provided, try again...");
-                        Thread.Sleep(1500);
+                        Console.WriteLine("Wrong input provided, press Enter and try again...");
+                        Console.ReadLine();
                         break;
                 }
             }
         }
-        static void LoadSortPart()
+        static private void LoadSortPart()
         {
             bool k = true;
             while (k)
@@ -123,7 +121,7 @@ namespace Task_1_notebook
                         break;
                     case "2":
                         Console.Clear();
-                        notebook.SortByNumber();
+                        notebook.SortByYearOfBirth();
                         Console.WriteLine("Successfully sorted!");
                         Console.WriteLine("Press Enter to go back...");
                         Console.ReadLine();
@@ -136,13 +134,13 @@ namespace Task_1_notebook
 
                     default:
                         Console.Clear();
-                        Console.WriteLine("Wrong input provided, try again...");
-                        Thread.Sleep(1500);
+                        Console.WriteLine("Wrong input provided, press Enter try again...");
+                        Console.ReadLine();
                         break;
                 }
             }
         }
-        static void LoadEditPart()
+        static private void LoadEditPart()
         {
             bool k = true;
             while (k)
@@ -157,47 +155,53 @@ namespace Task_1_notebook
                         while (p)
                         {
                             Console.Clear();
-                            Console.WriteLine("Enter member type (employee or manager)");
+                            Console.WriteLine("Enter member type (employee or manager) or enter 0 to go back");
                             try
                             {
                                 string input = Console.ReadLine();
-                                if (input == "employee")
+                                switch (input)
                                 {
-                                    Employee employee;
-                                    Console.Clear();
-                                    Console.WriteLine("Enter last name, name, phone number, manager name and year of birth");
-                                    string[] info = Console.ReadLine().Split(' ');
-                                    if (info.Length != 5)
-                                    {
-                                        throw new Exception("wrong amount of arguments provided");
-                                    }
-                                    employee = new Employee(info[0], info[1], info[2], info[3], int.Parse(info[4]));
-                                    notebook.AddEmployee(employee);
-                                    Console.WriteLine("Successfuly added!");
-                                    Console.WriteLine("Press Enter to go back...");
-                                    p = false;
-                                }
-                                else if (input == "manager")
-                                {
-                                    Manager manager;
-                                    Console.Clear();
-                                    Console.WriteLine("Enter last name, name, phone number, departament name and year of birth");
-                                    string[] info = Console.ReadLine().Split(' ');
-                                    if (info.Length != 5)
-                                    {
-                                        throw new Exception("wrong amount of arguments provided");
-                                    }
-                                    manager = new Manager(info[0], info[1], info[2], info[3], int.Parse(info[4]));
-                                    notebook.AddManager(manager);
-                                    Console.WriteLine("Successfuly added!");
-                                    Console.WriteLine("Press Enter to go back...");
-                                    p = false;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("wrong type provided");
-                                    Console.WriteLine("Press enter to go back...");
-                                    Console.ReadLine();
+                                    case "employee":
+                                        Employee employee;
+                                        Console.Clear();
+                                        Console.WriteLine("Enter last name, name, phone number, manager last name, name and employee year of birth");
+                                        string[] info = Console.ReadLine().Split(' ',StringSplitOptions.RemoveEmptyEntries);
+                                        if (info.Length != 6)
+                                        {
+                                            throw new WrongAmountOfArgumentsException("wrong amount of arguments provided");
+                                        }
+                                        employee = new Employee(info[0], info[1], info[2], info[3] + " " + info[4], int.Parse(info[5]));
+                                        notebook.AddEmployee(employee);
+                                        Console.WriteLine("Successfuly added!");
+                                        Console.WriteLine("Press Enter to go back...");
+                                        Console.ReadLine();
+                                        p = false;
+                                        break;
+                                    case "manager":
+                                        Manager manager;
+                                        Console.Clear();
+                                        Console.WriteLine("Enter last name, name, phone number, departament name and year of birth");
+                                        info = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                        if (info.Length != 5)
+                                        {
+                                            throw new WrongAmountOfArgumentsException("wrong amount of arguments provided");
+                                        }
+                                        manager = new Manager(info[0], info[1], info[2], info[3], int.Parse(info[4]));
+                                        notebook.AddManager(manager);
+                                        Console.WriteLine("Successfuly added!");
+                                        Console.WriteLine("Press Enter to go back...");
+                                        p = false;
+                                        Console.ReadLine();
+                                        break;
+                                    case "0":
+                                        p = false;
+                                        Console.Clear();
+                                        break;
+                                    default:
+                                        Console.WriteLine("wrong type provided");
+                                        Console.WriteLine("Press enter to go back...");
+                                        Console.ReadLine();
+                                        break;
                                 }
                             }
                             catch (System.FormatException e)
@@ -206,37 +210,89 @@ namespace Task_1_notebook
                                 Console.WriteLine("Press enter to go back...");
                                 Console.ReadLine();
                             }
-                            catch (Exception e)
+                            catch (WrongAmountOfArgumentsException e)
+                            {
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine("Press enter to go back...");
+                                Console.ReadLine();
+                            }
+                            catch (IntegrityViolationException e)
+                            {
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine("You must add manager first");
+                                Console.WriteLine("Press enter to go back...");
+                                Console.ReadLine();
+                            }
+                            catch(ValidationException e)
                             {
                                 Console.WriteLine(e.Message);
                                 Console.WriteLine("Press enter to go back...");
                                 Console.ReadLine();
                             }
                         }
-                        
-                        Console.ReadLine();
+
+                        //Console.ReadLine();
                         break;
                     case "2":
                         Console.Clear();
-                        notebook.SortByNumber();
-                        Console.WriteLine("Successfully sorted!");
-                        Console.WriteLine("Press Enter to go back...");
-                        Console.ReadLine();
+                        Console.WriteLine("Enter ID:");
+                        try
+                        {
+                            int ID = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Are you sure you want to delete this record? y/n");
+                            Console.WriteLine(notebook.FindByID(ID));
+                            if (Console.ReadLine() == "y")
+                            {
+                                notebook.DeleteByID(ID);
+                                Console.WriteLine("Successfully deleted!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("deletion canceled");
+                            }                       
+                            Console.WriteLine("Press Enter to go back...");
+                            Console.ReadLine();
+                        }
+                        catch (System.FormatException e)
+                        {
+                            Console.WriteLine("wrong ID format provided");
+                            Console.WriteLine("Press enter to go back...");
+                            Console.ReadLine();
+                        }
+                        catch(ValidationException e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        catch(IntegrityViolationException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine($"{e.AffectedRowsIDs.Count} affected:");
+                            foreach(var item in e.AffectedRowsIDs)
+                            {
+                                Console.WriteLine(notebook.FindByID(item));
+                            }
+                            Console.WriteLine("You must delete this employees first");
+                            Console.WriteLine("Press enter to go back...");
+                            Console.ReadLine();
+
+                        }
                         break;
                     case "0":
                         {
                             k = false;
+                            Console.Clear();
                         }
                         break;
 
                     default:
                         Console.Clear();
-                        Console.WriteLine("Wrong input provided, try again...");
-                        Thread.Sleep(1500);
+                        Console.WriteLine("Wrong input provided, press Enter and try again...");
+                        Console.ReadLine();
                         break;
                 }
             }
-        }//not finished
+        }
+        
         static void Main(string[] args)
         {
             bool k = true;
@@ -268,8 +324,8 @@ namespace Task_1_notebook
                         break;
                     default:
                         Console.Clear();
-                        Console.WriteLine("Wrong iput provided, try again...");
-                        Thread.Sleep(1500);
+                        Console.WriteLine("Wrong iput provided, press Enter and try again...");
+                        Console.ReadLine();
                         break;
 
                 }

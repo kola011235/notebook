@@ -5,11 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace Task_1_notebook
 {
+    /// <summary>
+    /// Implements methods for validation
+    /// </summary>
     class Validator
     {
         String phoneNumberPattern = @"^((\+7|7|8)+([0-9]){10})$";
         String namePattern = @"^[a-zA-Z]+$";
-
+        String nameAndLastNamePattern = @"^[a-zA-Z]+ [a-zA-Z]+$";
         public bool isValidName(string name)
         {
             return (Regex.IsMatch(name, namePattern));
@@ -17,6 +20,10 @@ namespace Task_1_notebook
         public bool isValidPhoneNumber(string name)
         {
             return (Regex.IsMatch(name, phoneNumberPattern));
+        }
+        public bool isValidNameAndLastName(string name)
+        {
+            return (Regex.IsMatch(name, nameAndLastNamePattern));
         }
         public bool isValidYearOfBirth(int year)
         {

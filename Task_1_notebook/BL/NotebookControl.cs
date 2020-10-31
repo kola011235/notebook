@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Task_1_notebook.Exceptions;
 
 namespace Task_1_notebook
 {
+    /// <summary>
+    /// Implements methods for validation
+    /// </summary>
     class NotebookControl
     {
         JsonFileHandler fileHandler = new JsonFileHandler("notebook.json");
@@ -14,8 +18,14 @@ namespace Task_1_notebook
         public NotebookControl()
         {
             staff = fileHandler.GetStaffMembers();
-            IDPointer = staff.Max(x => x.ID)+1;
-
+            if (staff.Count==0)
+            {
+                IDPointer = 0;
+            }
+            else
+            {
+                IDPointer = staff.Max(x => x.ID) + 1;
+            }
         }
         public void Save()
         {
@@ -28,35 +38,27 @@ namespace Task_1_notebook
         public List<StaffMember> GetByName(string name)
         {
             List<StaffMember> result = staff.FindAll(x => x.Name == name);
-            if (result.Count==0)
-            {
-                throw new Exception($"There is no record with name {name}");
-            }
             return result;
         }
         public List<StaffMember> GetByLastName(string lastName)
         {
             List<StaffMember> result = staff.FindAll(x => x.LastName == lastName);
-            if (result.Count == 0)
-            {
-                throw new Exception($"There is no record with last name {lastName}");
-            }
             return result;
         }
         public List<StaffMember> GetByPhoneNumber(string phoneNumber)
         {
             List<StaffMember> result = staff.FindAll(x => x.PhoneNumber == phoneNumber);
-            if (result.Count == 0)
-            {
-                throw new Exception($"There is no record with phoneNumber {phoneNumber}");
-            }
             return result;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manager"></param>
         public void AddManager(Manager manager)
         {
-            if (staff.Contains(manager))
+            if (staff.Find(x => (x.Name == manager.Name && x.LastName == manager.LastName)) != null)
             {
-                throw new Exception("This record already exist");
+                throw new ValidationException("This record already exist");
             }
             List<String> failedFields = new List<String>();
             bool isFailed = false; 
@@ -93,7 +95,7 @@ namespace Task_1_notebook
                     failedFieldsPart += failedFields[i] + ", ";
                 }
                 failedFieldsPart += failedFields[failedFields.Count - 1];
-                throw new Exception("Invalid " + failedFieldsPart + " provided");
+                throw new ValidationException("Invalid " + failedFieldsPart + " provided");
             }
             manager.ID = IDPointer;
             IDPointer++;
@@ -101,9 +103,9 @@ namespace Task_1_notebook
         }
         public void AddEmployee(Employee employee)
         {
-            if (staff.Contains(employee))
+            if (staff.Find(x=>(x.Name==employee.Name && x.LastName == employee.LastName))!=null)
             {
-                throw new Exception("This record already exist");
+                throw new ValidationException("This record already exist");
             }
             List<String> failedFields = new List<String>();
             bool isFailed = false;
@@ -127,7 +129,7 @@ namespace Task_1_notebook
                 failedFields.Add("phone number");
                 isFailed = true;
             }
-            if (!validator.isValidName(employee.ManagerName))
+            if (!validator.isValidNameAndLastName(employee.ManagerName))
             {
                 failedFields.Add("manager name");
                 isFailed = true;
@@ -140,32 +142,46 @@ namespace Task_1_notebook
                     failedFieldsPart += failedFields[i] + ", ";
                 }
                 failedFieldsPart += failedFields[failedFields.Count - 1];
-                throw new Exception("Invalid " + failedFieldsPart + " provided");
+                throw new ValidationException("Invalid " + failedFieldsPart + " provided");
+            }
+            Manager manager = new Manager();
+            manager = (Manager)staff.Find(x => x.GetType().Name == "Manager"
+            && (((Manager)x).LastName + " " + ((Manager)x).Name == employee.ManagerName));
+            if (manager==null)
+            {
+                throw new IntegrityViolationException("There is no manager record with this name");
             }
             employee.ID = IDPointer;
+            manager.AssignedEmployees.Add(employee.ID);
             IDPointer++;
             staff.Add(employee);
         } 
+        public StaffMember FindByID(int ID)
+        {
+            return staff.Find(x=>x.ID==ID);
+        }
         public void DeleteByID(int ID)
         {
             StaffMember member = staff.Find(x => x.ID == ID);
             if (member == null)
             {
-                throw new Exception("No record found for id");
+                throw new ValidationException("No record found for id");
+            }
+            if((member.GetType().Name=="Manager") && (((Manager)member).AssignedEmployees.Count!=0))
+            {
+                throw new IntegrityViolationException("There are employees assigned to this manager", ((Manager)member).AssignedEmployees);
             }
             staff.Remove(member);
         }
         public void SortByLastName()
         {
             staff = staff.OrderBy(x => x.LastName).ToList();
+            staff.Reverse();
         }
         public void SortByName()
         {
             staff = staff.OrderBy(x => x.Name).ToList();
-        }
-        public void SortByNumber()
-        {
-            staff = staff.OrderBy(x => x.PhoneNumber).ToList();
+            staff.Reverse();
         }
         public void SortByYearOfBirth()
         {
