@@ -47,10 +47,6 @@ namespace Task_1_notebook
             List<StaffMember> result = staff.FindAll(x => x.PhoneNumber == phoneNumber);
             return result;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="manager"></param>
         public void AddManager(Manager manager)
         {
             if (staff.Find(x => (x.Name == manager.Name && x.LastName == manager.LastName)) != null)

@@ -230,8 +230,6 @@ namespace Task_1_notebook
                                 Console.ReadLine();
                             }
                         }
-
-                        //Console.ReadLine();
                         break;
                     case "2":
                         Console.Clear();
